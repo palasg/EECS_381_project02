@@ -43,7 +43,7 @@ callcmake(){
         else
             echo "$1"
              cmake -S ${cmakerootdir} -DCMAKE_BUILD_TYPE=$1  -B ${build_dir}
-             #cmake --build ${build_dir} --clean-first
+             cmake --build ${build_dir} --clean-first
         fi
 
     fi
