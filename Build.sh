@@ -43,12 +43,12 @@ callcmake(){
 
 }
 
-
 while getopts ":b:ch" flag; do
 
     case ${flag} in
         b )
             build_flag=${OPTARG}
+	    echo $build_flag
             ;;
         c)
             clean_build_flag=true

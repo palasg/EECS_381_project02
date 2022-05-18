@@ -1,25 +1,33 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 
 project(Project_02)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} "-g -Wall -Wextra -Werror -Wshadow -Wconversion -Wunreachable-code -pedantic-errors -fsanitize=address -o0")
 
 
-if(CMAKE_BUILD_TYPE STREQUAL DEBUG)
-    set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra -Werror -Wshadow -Wconversion -Wunreachable-code -O0")
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+	message("debug mode")
+   	 set(CMAKE_CXX_FLAGS_DEBUG "-o0 -g -Wall -Wextra -Wshadow -Wconversion -Wunreachable-code -pedantic-errors -fno-omit-frame-pointer") 
+        #-fsanitize=address")
+
 else ()
     message("release mode")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 endif ()
 
+add_subdirectory(libs/Gtest/googletest)
+add_subdirectory(tests)
 
-include_directories(includes)
+include_directories(includes
+                    includes/String/)
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp"
+                    "src/**/*.cpp")
 
 message(${SOURCES})
+message(${CMAKE_CXX_FLAGS_DEBUG})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 

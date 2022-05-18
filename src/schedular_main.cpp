@@ -1,4 +1,8 @@
+//./Build.sh -b Debug
+
 #include <iostream>
+#include "UserInputs.h"
+#include"String.hpp"
 
 using std::cout;
 using std::endl;
