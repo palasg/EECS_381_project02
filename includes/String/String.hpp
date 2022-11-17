@@ -135,7 +135,7 @@ public:
 	static int get_number()
 		{return number;}
 	// Return total bytes allocated for all Strings in existence
-	static int get_total_allocation()
+	size_t get_total_allocation()
 		{return total_allocation;}
 	// Call with true to cause ctor, assignment, and dtor messages to be output.
 	// These messages are output from each function before it does anything else.
@@ -166,7 +166,7 @@ private:
 	/* Variables for monitoring functions - not part of a normal implementation. */
 	/* But used here for demonstration and testing purposes. */
 	static int number;				// counts number of String objects in existence
-	static int total_allocation;	// counts total amount of memory allocated
+	static std::size_t total_allocation;	// counts total amount of memory allocated
 	static bool messages_wanted;	// whether to output constructor/destructor/operator= messages, initially false
 
 	constexpr static std::size_t minimum_allocation= 10;

@@ -6,7 +6,7 @@ using size_t = std::size_t;
 
 char String::a_null_byte = ' ';
 int String::number = 0; // counts number of String objects in existence
-int String::total_allocation = 0; // counts total amount of memory allocated
+std::size_t String::total_allocation = 0; // counts total amount of memory allocated
 bool String::messages_wanted = true;
 
 size_t String::calculateMinimumAllocationSize(std::size_t free_space,
@@ -21,7 +21,14 @@ size_t String::calculateMinimumAllocationSize(std::size_t free_space,
     return 2 * (string_length + required_size + 1);
   }
 }
-
+/*
+* Functionality of this is to maintain all the 
+* secondary info about String
+* string_length_ can be deduced
+* delta_number: if you want to increase the number of string
+* memory_length: allocated memory length
+* 
+*/
 void String::houseKeeping() {
   string_length_ = strlen(content_);
   number++;
@@ -41,6 +48,11 @@ void Swap(String &str1, String &str2) {
 String::String(const char *cstr_) {
   if (strlen(cstr_) != 0) {
     // not
+    if (messages_wanted)
+    {
+      std::cout<<"From default c'tor; the input string is "<<cstr_<<std::endl; 
+    }
+    
     string_length_ = strlen(cstr_);
     memory_length_ = calculateMinimumAllocationSize(0, string_length_, 0);
 
@@ -49,6 +61,10 @@ String::String(const char *cstr_) {
     free_space_ = memory_length_ - string_length_;
 
   } else {
+    if (messages_wanted)
+    {
+      std::cout<<"From default c'tor; the input string is "<<cstr_<<std::endl; 
+    }
     number++; // increase number of string
     content_ = nullptr;
     string_length_ = 0;
@@ -97,7 +113,7 @@ String &String::operator=(const char *rhs) {
 
 // Return a reference to character i in the string.
 // Throw exception if 0 <= i < size is false.
-char &String::operator[](std::size_t i) {
+char &String::operator[] (const std::size_t i) {
   try {
     if (string_length_ != 0) {
       if (i < string_length_) {
@@ -167,10 +183,14 @@ String &String::operator+=(char rhs) {
     strcpy(this->content_, temp);
     *(this->content_ + string_length_) = rhs;
     *(this->content_ + string_length_ + 1) = '\0';
+
     this->string_length_++;
     this->memory_length_ = 2 * string_length_ + 2u + 1u;
     free_space_ = this->memory_length_ - string_length_;
-    //delete [] temp;
+    total_allocation = total_allocation - strlen(temp) -+ strlen(this->content_);
+
+
+    delete [] temp;
     temp = nullptr;
     return *this;
   }
@@ -187,6 +207,39 @@ String &String::operator+=(char rhs) {
 //      string_length_ = string_length_ + required_extra_space;
 
 //    }
+
+
+String &String::operator+=(const String& lhs){
+  if (lhs.size()==0)
+  {
+    return *this;
+  }
+  else{
+    if (free_space_ > lhs.string_length_+1) //no change ro allocate
+    {
+      strcat(this->content_, lhs.content_);
+      string_length_ += lhs.string_length_;
+      free_space_ -= lhs.string_length_;
+    }
+    else{
+      size_t required_allocation = calculateMinimumAllocationSize(free_space_,lhs.string_length_,string_length_);
+      char* temp = new char[required_allocation];
+      total_allocation= total_allocation - memory_length_ + required_allocation;
+      String temp_str = String(content_); //std::move
+      delete [] content_;
+      content_ = temp;
+      strcpy(content_,temp_str.content_);
+      strcat(content_,lhs.content_);
+      *(content_+string_length_+lhs.string_length_+1) = '\0';
+      string_length_ = strlen(content_);
+      free_space_ = required_allocation - string_length_;
+      memory_length_ = required_allocation;
+    }
+    
+  }
+  return *this;
+  
+}
     
 
 // }
@@ -199,11 +252,39 @@ void String::DisplayStringInfo() const {
   std::cout << "Free space: " << this->free_space_ << std::endl;
 }
 
-String::~String() { delete[] content_; }
+String::~String() {
+  if(messages_wanted){
+    std::cout<<"Deleting string "<<content_<<std::endl;
+  }
+  total_allocation -= memory_length_;
+  memory_length_ = 0;
+  number--;
+  delete[] content_; 
+
+   
+   }
 
 // Input and output operators
 // The output operator writes the contents of the String to the stream
 std::ostream &operator<<(std::ostream &os, const String &str) {
   os << str.c_str();
   return os;
+}
+
+/* The input operator clears the supplied String, then starts reading the stream.
+It skips initial whitespace, then copies characters into
+the supplied str until whitespace is encountered again. The terminating
+whitespace remains in the input stream, analogous to how string input normally works.
+str is expanded as needed, and retains the final allocation.
+If the input stream fails, str contains whatever characters were read. */
+std::istream& operator>> (std::istream& is, String& str){
+  //reading in stringstream from cin
+  
+}
+
+// compare lhs and rhs strings; constructor will convert a C-string literal to a String.
+// comparison is based on std::strcmp result compared to 0
+bool operator== (const String& lhs, const String& rhs){
+
+  return strcmp(lhs.c_str(), rhs.c_str());
 }

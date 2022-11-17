@@ -12,3 +12,10 @@ TEST(StringTest, outOfBoundCheck) {
   str.DisplayStringInfo();
   str.clear();
 }
+TEST(StringTest, operator_plus){
+
+String str1("Hello");
+String str2("world");
+str1+= str2;
+EXPECT_TRUE(str1.c_str()=="Helloworld");
+}
