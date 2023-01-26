@@ -1,6 +1,6 @@
 
-#include "../../includes/String/String.hpp"
-#include <gtest/gtest.h>
+#include "String.hpp"
+#include<gtest/gtest.h>
 
 TEST(StringTest, outOfBoundCheck) {
   String str("Hell Yeah");
@@ -17,5 +17,6 @@ TEST(StringTest, operator_plus){
 String str1("Hello");
 String str2("world");
 str1+= str2;
-EXPECT_TRUE(str1.c_str()=="Helloworld");
+String result_str("Helloworld");
+EXPECT_TRUE(str1==result_str);
 }

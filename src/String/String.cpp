@@ -286,5 +286,6 @@ std::istream& operator>> (std::istream& is, String& str){
 // comparison is based on std::strcmp result compared to 0
 bool operator== (const String& lhs, const String& rhs){
 
-  return strcmp(lhs.c_str(), rhs.c_str());
+  int result = strcmp(lhs.c_str(), rhs.c_str());
+  return (result==0)?true:false;
 }
