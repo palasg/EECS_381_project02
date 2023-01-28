@@ -79,7 +79,12 @@ public:
 	String(const String& original);
     // Move constructor - take original's data, and set the original String
     // member variables to the empty state (do not initialize "this" String and swap).
-    String(String&& original) noexcept;
+    String(String&& original) noexcept: 
+	content_(original.content_), 
+	free_space_(original.free_space_),
+	string_length_(original.string_length_),
+	memory_length_(original.memory_length_)
+	{original.content_ = nullptr;}
 	// deallocate C-string memory
 	~String() noexcept;
 	

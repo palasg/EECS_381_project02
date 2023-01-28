@@ -62,5 +62,6 @@
         "unordered_set": "cpp",
         "mutex": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": true
 }
