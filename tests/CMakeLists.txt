@@ -14,8 +14,8 @@ ${PROJECT_SOURCE_DIR}/src/*.cpp
 #to remove main function 
 #gtest also provide main hence need to exclude
 list(REMOVE_ITEM PROJECT_SOURCES "/home/palasg/cpp/git_repositories/eecs_381/EECS_381_project02/src/schedular_main.cpp")
-message(${TEST_SOURCES})
-message(${PROJECT_SOURCES})
+#message(${TEST_SOURCES})
+#message(${PROJECT_SOURCES})
 
 add_executable(${BINARY} ${TEST_SOURCES} ${PROJECT_SOURCES}
 )

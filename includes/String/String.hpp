@@ -207,7 +207,7 @@ the supplied str until whitespace is encountered again. The terminating
 whitespace remains in the input stream, analogous to how string input normally works.
 str is expanded as needed, and retains the final allocation.
 If the input stream fails, str contains whatever characters were read. */
-std::istream& operator>> (std::istream& is, String& str);
+std::istream& operator >> (std::istream& is, String& str);
 
 
 #endif

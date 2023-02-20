@@ -316,7 +316,7 @@ the supplied str until whitespace is encountered again. The terminating
 whitespace remains in the input stream, analogous to how string input normally works.
 str is expanded as needed, and retains the final allocation.
 If the input stream fails, str contains whatever characters were read. */
-std::istream &operator>>(std::istream &is, String &str)
+std::istream& operator >> (std::istream& is, String& str)
 {
   // reading in stringstream from cin
   constexpr std::size_t kMaxBuff = 50u;
@@ -362,4 +362,11 @@ bool operator==(const String &lhs, const String &rhs)
 
   int result = strcmp(lhs.c_str(), rhs.c_str());
   return (result == 0) ? true : false;
+}
+//comparision is based on strcmp function 
+//strcmp returns 0: if two char* are same; <0 : if first char* is less than second 
+//and >0 : if first char* > second char* 
+bool operator< (const String& lhs, const String& rhs){
+  int result = strcmp(lhs.c_str(), rhs.c_str()); 
+  return (result < 0)?true : false;
 }
