@@ -9,7 +9,7 @@ char String::a_null_byte = ' ';
 int String::number = 0;  // counts number of String objects in existence
 std::size_t String::total_allocation =
     0;  // counts total amount of memory allocated
-bool String::messages_wanted = true;
+bool String::messages_wanted = false;
 
 size_t String::calculateMinimumAllocationSize(std::size_t free_space,
                                               std::size_t required_size,

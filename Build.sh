@@ -25,6 +25,8 @@ callcmake(){
             cmake --build ${build_dir}
         else
             cmake -S ${cmakerootdir} -DCMAKE_BUILD_TYPE=$1 -B ${build_dir}
+            cmake --build ${build_dir}
+
         fi
 
     else

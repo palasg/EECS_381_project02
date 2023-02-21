@@ -21,9 +21,9 @@ String result_str("Helloworld");
 EXPECT_TRUE(str1==result_str);
 }
 
-TEST(StringTest_3, operator_inputstream){
-  String str;
-  std::cin >> str; 
-  str.DisplayStringInfo();
+// TEST(StringTest_3, operator_inputstream){
+//   String str;
+//   std::cin >> str; 
+//   str.DisplayStringInfo();
 
-}
+// }
