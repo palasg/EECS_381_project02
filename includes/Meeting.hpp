@@ -31,6 +31,7 @@ too. */
 
 #include <iostream>
 
+#include "OrderedList.hpp"
 #include "Person.hpp"
 
 using namespace person;
@@ -42,7 +43,7 @@ class Meeting {
   Meeting(int time_, const String& topic_);
 
   // construct a Meeting with only a time
-  Meeting(int time_);
+  Meeting(int time_):m_time(time_){}
   /*fill this in*/
   // Construct a Meeting from an input file stream in save format
   // Throw Error exception if invalid data discovered in file.
@@ -50,15 +51,13 @@ class Meeting {
   // Person list is needed to resolve references to meeting participants
   // Input for a member variable value is read directly into the member
   // variable.
-  //   Meeting(std::ifstream& is,
-  //           const Ordered_list<const Person*, Less_than_ptr<const Person*>>&
-  //               people);
+  Meeting(
+      std::ifstream& is,
+      const Ordered_list<const Person*, Less_than_ptr<const Person*>>& people);
 
   // accessors
-  int get_time() const { /*fill this in*/
-  }
-  void set_time(int time_) { /*fill this in*/
-  }
+  int get_time() const { return m_time; }
+  void set_time(int time_) { m_time = time_; }
 
   // Meeting objects manage their own participant list. Participants
   // are identified by a pointer to that individual's Person object.
@@ -80,13 +79,14 @@ class Meeting {
   /* *** provide a friend declaration for the output operator */
 
  private:
-  /* *** the participant information must be kept in a container of const
-   * Person*   */
-  //   using Participants_t =
-  //       Ordered_list<const Person*, Less_than_ptr<const Person*>>;
-  //   Participants_t participants;
+  int m_time;
+  String m_topic;
+  using Participants_t =
+      Ordered_list<const Person*, Less_than_ptr<const Person*>>;
+  Participants_t participants;
 
   /* *** other private members are your choice */
+  // String m_topic;
 };
 
 // Print the Meeting data as follows:
