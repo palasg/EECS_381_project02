@@ -65,6 +65,9 @@ class Person {
     return m_last_name < rhs.m_last_name;
   }
 
+bool operator==(const Person& rhs) const {
+    return m_last_name == rhs.m_last_name;
+  }
   /* *** provide here a friend declaration for the output operator */
   friend std::ostream& operator<<(std::ostream& os, const Person& person);
 

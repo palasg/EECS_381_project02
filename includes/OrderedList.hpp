@@ -267,7 +267,7 @@ class Ordered_list {
   std::size_t size() const { return m_length; }
 
   // Return true if the list is empty
-  bool empty() const { return m_length > 0 ? true : false; }
+  bool empty() const { return m_length > 0 ? false : true; }
 
   // Iterator is a public nested class within Ordered_list.
   // An Iterator object designates a Node by encapsulating a pointer to the
@@ -370,7 +370,8 @@ class Ordered_list {
     // and returns this iterator.
     const_Iterator& operator++()  // prefix
     {
-      /* fill this in */
+      node_ptr = node_ptr->next;
+      return *this;
     }
     // postfix ++ operator saves the current address for the pointed-to node,
     // moves this iterator to point to the next node, and returns
@@ -380,9 +381,18 @@ class Ordered_list {
       /* fill this in */
     }
     // const_Iterators are equal if they point to the same node.
-    bool operator==(const_Iterator rhs) const { /* fill this in */
-    }
-    bool operator!=(const_Iterator rhs) const { /* fill this in */
+    bool operator==(const_Iterator rhs) const { return !(*this != rhs); }
+    bool operator!=(const_Iterator rhs) const {
+      // if both node_ptr are null
+      if (rhs.node_ptr == nullptr && node_ptr == nullptr) {
+        return false;
+      } else if (rhs.node_ptr == nullptr && node_ptr != nullptr) {
+        return true;
+      } else if (rhs.node_ptr != nullptr && node_ptr == nullptr) {
+        return true;
+      } else if (rhs.node_ptr != nullptr && node_ptr != nullptr) {
+        return rhs.node_ptr != node_ptr;
+      }
     }
 
     // *** here, declare the outer Ordered_list class as a friend

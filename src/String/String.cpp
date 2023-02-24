@@ -317,3 +317,10 @@ bool operator<(const String &lhs, const String &rhs) {
   int result = strcmp(lhs.c_str(), rhs.c_str());
   return (result < 0) ? true : false;
 }
+
+
+//this function concatenates two String using =+ operator
+String operator+(const String& lhs, const String& rhs){
+  return lhs+rhs;
+}
+

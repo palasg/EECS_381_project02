@@ -21,6 +21,21 @@ String result_str("Helloworld");
 EXPECT_TRUE(str1==result_str);
 }
 
+TEST(StringTest3, copyMove){
+  String temp_str{"Hello"}; 
+  String str(std::move(temp_str)); 
+}
+
+TEST(StringTest4, operator_concatinate_assignment){
+
+String str1 {"hello"};
+String str2{"world"};
+str1+= str2; 
+std::cout << str1 <<std::endl;
+
+
+}
+
 // TEST(StringTest_3, operator_inputstream){
 //   String str;
 //   std::cin >> str; 

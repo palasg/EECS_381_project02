@@ -78,6 +78,8 @@ class Meeting {
 
   /* *** provide a friend declaration for the output operator */
 
+  friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
+
  private:
   int m_time;
   String m_topic;

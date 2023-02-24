@@ -21,4 +21,6 @@ TEST(MeetingTest, Test_1) {
   m1.remove_participant(&p2);
 
   EXPECT_FALSE(m1.is_participant_present(&p2));
+
+  std::cout << m1;
 }
