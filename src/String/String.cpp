@@ -259,7 +259,7 @@ String::~String() {
 // Input and output operators
 // The output operator writes the contents of the String to the stream
 std::ostream &operator<<(std::ostream &os, const String &str) {
-  if( (str.size() > 0) ){
+  if ((str.size() > 0)) {
     os << str.c_str();
   }
 
@@ -272,15 +272,16 @@ str until whitespace is encountered again. The terminating whitespace remains in
 the input stream, analogous to how string input normally works. str is expanded
 as needed, and retains the final allocation. If the input stream fails, str
 contains whatever characters were read. */
-std::istream &operator>>(std::istream &is, String &str) {
+/*std::istream &operator>>(std::istream &is, String &str) {
   // reading in stringstream from cin
+  // clear the string
   constexpr std::size_t kMaxBuff = 50u;
   char buff[kMaxBuff];
   std::size_t buff_free_space = kMaxBuff;
   char t;
   char *buff_ptr = buff;
   is >> t;
-  // remove bigining spaces
+  // remove begining spaces
   while (isspace(t) && !is.fail()) {
     is >> t;
   }
@@ -302,7 +303,7 @@ std::istream &operator>>(std::istream &is, String &str) {
   String str1(buff_ptr);
   str = str1;
   return is;
-}
+} */
 
 // compare lhs and rhs strings; constructor will convert a C-string literal to a
 // String. comparison is based on std::strcmp result compared to 0
@@ -318,9 +319,41 @@ bool operator<(const String &lhs, const String &rhs) {
   return (result < 0) ? true : false;
 }
 
+// this function concatenates two String using =+ operator
+String operator+(const String &lhs, const String &rhs) { return lhs + rhs; }
 
-//this function concatenates two String using =+ operator
-String operator+(const String& lhs, const String& rhs){
-  return lhs+rhs;
+std::istream &operator>>(std::istream &is, String &str) {
+  // clear the input stream
+  str.clear();
+  char temp_char;
+  constexpr std::size_t buff_size = 3u;
+  char* buff = new char [buff_size];
+  std::size_t allocated_size = buff_size;
+  is >> std::ws;  // eat up any leading white space
+
+  temp_char = is.peek();
+  std::size_t char_length = 0u;
+  while (temp_char != EOF && !(isspace(temp_char)) && (temp_char != '\n')) {
+    is.get(temp_char);
+    *(buff + char_length) = temp_char;
+    char_length++;
+    if (char_length >= allocated_size) {
+      char*  alt_buffer = new char [2*char_length];
+      allocated_size = 2*char_length;
+      memcpy(alt_buffer, buff, (char_length));
+      delete [] buff;
+      buff = alt_buffer;
+      alt_buffer = nullptr;
+    }
+  temp_char = is.peek();
+
+  }
+  *(buff + char_length) = '\0';
+  String temp_str(buff);
+  delete [] buff;
+  buff = nullptr;
+  str = temp_str;
+  return is;
+
+  return is;
 }
-

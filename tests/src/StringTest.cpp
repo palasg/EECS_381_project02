@@ -33,7 +33,6 @@ String str2{"world"};
 str1+= str2; 
 std::cout << str1 <<std::endl;
 
-
 }
 
 // TEST(StringTest_3, operator_inputstream){
@@ -42,3 +41,9 @@ std::cout << str1 <<std::endl;
 //   str.DisplayStringInfo();
 
 // }
+
+TEST(StringTest_4, input_operator){
+  String str; 
+  std::cin >> str;
+  std::cout <<str; 
+}
