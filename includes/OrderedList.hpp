@@ -307,7 +307,10 @@ class Ordered_list {
     // an iterator pointing to the node at the saved address.
     Iterator operator++(int)  // postfix
     {
-      /* fill this in */
+      assert(node_ptr);
+      Iterator temp{node_ptr};
+      ++*this;
+      return temp;
     }
     // Iterators are equal if they point to the same node
     bool operator==(Iterator rhs) const { return !(*this != rhs); }
@@ -378,7 +381,9 @@ class Ordered_list {
     // an iterator pointing to the node at the saved address.
     const_Iterator operator++(int)  // postfix
     {
-      /* fill this in */
+      const_Iterator temp{node_ptr};
+      ++*this;
+      return temp;
     }
     // const_Iterators are equal if they point to the same node.
     bool operator==(const_Iterator rhs) const { return !(*this != rhs); }
@@ -413,7 +418,9 @@ class Ordered_list {
   // Return an Iterator pointing to the first node.
   // If the list is empty, the begin Iterator points to "past the end"
   Iterator begin() { return Iterator(m_head); }
-  // Return an iterator pointing to "past the end".
+  // Return an iterator pointing to "past the end". Sending a nullptr is
+  // soemtime troublesome but
+  // I do not have any idea how to implement how it could be better
   Iterator end() { return Iterator(); }  // same as next pointer of last node
 
   // Return a const_Iterator pointing to the first node.
@@ -430,11 +437,9 @@ class Ordered_list {
   const_Iterator end() const { return const_Iterator(nullptr); }
   // Return a const_Iterator pointing to the first node,
   // If the list is empty, the Iterator points to "past the end"
-  const_Iterator cbegin() const { /* fill this in */
-  }
+  const_Iterator cbegin() const { return const_Iterator(m_head); }
   // return a const_Iterator pointing to "past the end".
-  const_Iterator cend() const { /* fill this in */
-  }
+  const_Iterator cend() const { return const_Iterator(nullptr); }
   // The insert functions add the new datum to the list using the ordering
   // function. If an "equal" datum is already in the list, then the list is not
   // modified and false is returned. Otherwise, the new datum is inserted, and
@@ -480,6 +485,12 @@ class Ordered_list {
   /* *** other private member variables and functions are your choice. */
   Node<T>* m_head;
   std::size_t m_length;
+  Node<T>* m_tail; /*keep track of last node so that every time in push back we
+                      do not have to lopp entire list*/
+  // member variables
+  const_Iterator push_back(const Node<T>& new_node);
+  const_Iterator push_back(const_Iterator node_itr);
+  const_Iterator push_back(const T& datum);
 };
 
 // These function templates are given two iterators, usually .begin() and
@@ -564,13 +575,15 @@ void Ordered_list<T, OF>::erase(const_Iterator it) noexcept {
 }
 
 template <typename T, typename OF>
-Ordered_list<T, OF>::Ordered_list() : m_head{nullptr}, m_length{0} {}
+Ordered_list<T, OF>::Ordered_list()
+    : m_head{nullptr}, m_length{0}, m_tail{nullptr} {}
 
 template <typename T, typename OF>
 bool Ordered_list<T, OF>::insert(const T& new_datum) {
-  if (m_head == nullptr && m_length == 0) {
+  if (m_head == nullptr && m_length == 0) {  // inserting into an empty node
     m_head = new Node<T>{new_datum, nullptr, nullptr};
     m_length = 1;
+    m_tail = m_head;
     return true;
   } else {
     // serach the place where the new node shuld be placed
@@ -582,6 +595,7 @@ bool Ordered_list<T, OF>::insert(const T& new_datum) {
         Node<T>* new_node = new Node<T>{new_datum, nullptr, nullptr};
         next_node->next = new_node;
         new_node->prev = next_node;
+        m_tail = new_node;
         m_length++;
         return true;
       } else {
@@ -626,9 +640,128 @@ typename Ordered_list<T, OF>::Iterator Ordered_list<T, OF>::find(
   for (; first != last; ++first) {
     if (*first == prob_object) {
       return first;
+    } else {
+      /* check if the prob object is less than the current one
+       there is no meaning for searchign further beacuse list
+       is a ordered container*/
+      if (prob_object < *first) {
+        return last;
+      }
     }
   }
+
   return last;
+}
+
+/*Copy construct this list from another list by copying its data.
+The basic exception guarantee:
+If an exception is thrown when the type T contents of a node are copied,
+any nodes already constructed are destroyed, so that no memory is leaked,
+and the exception is then propagated from this constructor.*/
+template <typename T, typename OF>
+Ordered_list<T, OF>::Ordered_list(const Ordered_list& original) {
+  ordering_fo = original.ordering_fo;
+  m_length = original.m_length;
+  m_length = 0;
+
+  // Create an empty list (local variable so, if an exception happen compiler
+  // cutomatically call list desctructor to erase the half the allocated node)
+  // copy the source list into this temporarly local list
+  // now swap this temporary list into *this object
+  //  here we need to confirm that swap is noexception
+
+  // create an empty object list
+  Ordered_list<T, OF> temp_list;
+  
+  // loop through the element of original source list
+  for (const_Iterator itr = original.cbegin(); itr != original.cend(); ++itr) {
+    temp_list.push_back(*itr);
+  }
+
+  // swap this with the temp_list
+  temp_list.swap(*this);
+
+  // This is not exception gurantee  so dicsurd this
+  //  deep copy
+  //  get a copy of the head of original to iterate over nodes
+  /*  Node<T>* original_head_copy = original.m_head;
+   Node<T>* prev_ptr = nullptr;  // to iterate current list
+   while (original_head_copy != nullptr) {
+     // allocate space for node, it might throw an
+     // if it does then we need to clear the half baked list
+     // and also propagate the exception out of this constructor
+     Node<T>* new_node_ptr =
+         new Node<T>{original_head_copy->datum, nullptr, nullptr};
+     if (m_length == 0) {  // first time : need to assign m_head
+       m_head = new_node_ptr;
+       m_length++;
+       prev_ptr = new_node_ptr;
+       new_node_ptr = nullptr;
+     } else {  // link to next and prevs
+       prev_ptr->next = new_node_ptr;
+       new_node_ptr->prev = prev_ptr;
+       prev_ptr = new_node_ptr;
+       m_length++;
+     }
+     original_head_copy = original_head_copy->next;
+   }
+   original_head_copy = nullptr;
+   prev_ptr = nullptr; */
+}
+
+template <typename T, typename OF>
+bool Ordered_list<T, OF>::insert(T&& datum) {
+  T copy_datum = datum;
+  return this->insert(copy_datum);
+}
+
+template <typename T, typename OF>
+void Ordered_list<T, OF>::swap(Ordered_list& other) noexcept {
+  // no need to allocate deallocate (to make it no exception) only size and
+  // pointer exchange taking copy of everthing before replace
+  Node<T>* copy_current_head = m_head;
+  std::size_t copy_current_length = m_length;
+  OF copy_function_ptr = ordering_fo;
+  // replacing
+  m_head = other.m_head;
+  m_length = other.m_length;
+  ordering_fo = other.ordering_fo;
+  // swaping
+  other.m_head = copy_current_head;
+  other.m_length = copy_current_length;
+  other.ordering_fo = copy_function_ptr;
+}
+
+template <typename T, typename OF>
+typename Ordered_list<T, OF>::const_Iterator Ordered_list<T, OF>::push_back(
+    const Node<T>& new_node) {
+  Node<T>* new_node_ptr = new Node<T>{new_node.datum, nullptr, nullptr};
+  if (m_length == 0) {  // first time : need to assign m_head
+    m_head = new_node_ptr;
+    m_length++;
+    m_tail = m_head;
+    new_node_ptr = nullptr;
+  } else {  // link to next and prevs
+    m_tail->next = new_node_ptr;
+    new_node_ptr->prev = m_tail;
+    m_tail = new_node_ptr;
+    m_length++;
+  }
+  return const_Iterator(m_tail);
+}
+
+template <typename T, typename OF>
+typename Ordered_list<T, OF>::const_Iterator Ordered_list<T, OF>::push_back(
+    const_Iterator node_itr) {
+  Node<T> temp_node = *node_itr;
+  return this->push_back(temp_node);
+}
+
+template <typename T, typename OF>
+typename Ordered_list<T, OF>::const_Iterator Ordered_list<T, OF>::push_back(
+    const T& datum) {
+  Node<T> temp_node{datum, nullptr, nullptr};
+  this->push_back(temp_node);
 }
 
 #endif

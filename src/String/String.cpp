@@ -357,3 +357,11 @@ std::istream &operator>>(std::istream &is, String &str) {
 
   return is;
 }
+
+// move assignment: steals the content of rhs
+//and set to nullptr
+String& String::operator= (String&& rhs) noexcept{
+  clear();
+  Swap(*this,rhs);
+  return *this;
+}

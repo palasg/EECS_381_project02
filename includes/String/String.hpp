@@ -131,7 +131,7 @@ public:
 	The member variable values are interchanged, along with the
 	pointers to the allocated C-strings, but the two C-strings
 	are neither copied nor modified. No memory allocation/deallocation is done. */
-	void swap(String& other) noexcept;
+	void swap(String& other) noexcept; //this is already inplemented as friend function Swap()
 	
 	/* Monitoring functions - not part of a normal implementation */
 	/*	used here for demonstration and testing purposes. */

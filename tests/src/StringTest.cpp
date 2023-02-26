@@ -42,8 +42,8 @@ std::cout << str1 <<std::endl;
 
 // }
 
-TEST(StringTest_4, input_operator){
-  String str; 
-  std::cin >> str;
-  std::cout <<str; 
-}
+// TEST(StringTest_4, input_operator){
+//   String str; 
+//   std::cin >> str;
+//   std::cout <<str; 
+// }
