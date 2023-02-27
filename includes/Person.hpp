@@ -55,6 +55,11 @@ class Person {
 
   // Accessors
   const String& get_lastname() const { return m_last_name; }
+  // Accessors
+  const String& get_firstname() const { return m_first_name; }
+
+  // Accessors
+  const String& get_phone_number() const { return m_phone_no; }
 
   // Write a Person's data to a stream in save format with final endl.
   void save(std::ostream& os) const;
@@ -65,7 +70,7 @@ class Person {
     return m_last_name < rhs.m_last_name;
   }
 
-bool operator==(const Person& rhs) const {
+  bool operator==(const Person& rhs) const {
     return m_last_name == rhs.m_last_name;
   }
   /* *** provide here a friend declaration for the output operator */
@@ -74,9 +79,9 @@ bool operator==(const Person& rhs) const {
  private:
   /* *** private members are your choice */
 
-  const String m_first_name;
-  const String m_last_name;
-  const String m_phone_no;
+  const String m_first_name{};
+  const String m_last_name{};
+  const String m_phone_no{};
 };
 
 // output firstname, lastname, phoneno with one separating space, NO endl

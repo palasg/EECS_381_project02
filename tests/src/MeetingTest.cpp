@@ -22,5 +22,8 @@ TEST(MeetingTest, Test_1) {
 
   EXPECT_FALSE(m1.is_participant_present(&p2));
 
+  Meeting m2 = {10,"wow"};
+  m2 = m1;
+
   std::cout << m1;
 }

@@ -43,7 +43,7 @@ class Meeting {
   Meeting(int time_, const String& topic_);
 
   // construct a Meeting with only a time
-  Meeting(int time_):m_time(time_){}
+  Meeting(int time_) : m_time(time_) {}
   /*fill this in*/
   // Construct a Meeting from an input file stream in save format
   // Throw Error exception if invalid data discovered in file.
@@ -76,9 +76,40 @@ class Meeting {
   // the time
   bool operator<(const Meeting& other) const;
 
+  bool operator==(const Meeting& other) const;
+
   /* *** provide a friend declaration for the output operator */
 
   friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
+
+  /* meeting assignment operator: */
+  /*This is added for work around in ordered_list insert function assignment
+  operator The assignment operator is not available for person list: Probably
+  this is not good*/
+  Meeting operator=(const Meeting& m) {
+    // clear current meeting
+    // check for self assignment
+    // then copy it
+
+    if (!(*this == m)) {
+      this->clear_contents();
+      this->m_time = m.m_time;
+      this->m_topic = m.m_topic;
+      this->copy_participants(m.participants);
+      return *this;
+    }
+  }
+
+  // copy assignments
+  Meeting(const Meeting& m) {
+    this->clear_contents();
+    this->m_time = m.m_time;
+    this->m_topic = m.m_topic;
+    this->copy_participants(m.participants);
+  }
+
+  // destructor
+  ~Meeting() { this->participants.clear(); }
 
  private:
   int m_time;
@@ -86,9 +117,8 @@ class Meeting {
   using Participants_t =
       Ordered_list<const Person*, Less_than_ptr<const Person*>>;
   Participants_t participants;
-
-  /* *** other private members are your choice */
-  // String m_topic;
+  void copy_participants(Participants_t participants_list);
+  void clear_contents();
 };
 
 // Print the Meeting data as follows:

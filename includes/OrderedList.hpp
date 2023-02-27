@@ -325,6 +325,7 @@ class Ordered_list {
       } else if (rhs.node_ptr != nullptr && node_ptr != nullptr) {
         return rhs.node_ptr != node_ptr;
       }
+      return false;
     }
 
     // *** here, declare the outer Ordered_list class as a friend
@@ -653,6 +654,13 @@ typename Ordered_list<T, OF>::Iterator Ordered_list<T, OF>::find(
   return last;
 }
 
+  // The const version of find returns a const_Iterator
+template <typename T, typename OF>
+typename Ordered_list<T, OF>::const_Iterator Ordered_list<T, OF>::find(
+    const T& prob_object) const noexcept {
+
+    }
+
 /*Copy construct this list from another list by copying its data.
 The basic exception guarantee:
 If an exception is thrown when the type T contents of a node are copied,
@@ -762,6 +770,19 @@ typename Ordered_list<T, OF>::const_Iterator Ordered_list<T, OF>::push_back(
     const T& datum) {
   Node<T> temp_node{datum, nullptr, nullptr};
   this->push_back(temp_node);
+}
+
+
+template<typename T, typename OF> 
+std::ostream& operator<< (std::ostream& os, Ordered_list<T,OF> list){
+
+  auto itr = list.begin();
+  for (; itr != list.end(); ++itr)
+  {
+    os << *(itr);
+  }
+  
+
 }
 
 #endif
